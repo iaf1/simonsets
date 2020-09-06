@@ -34,13 +34,14 @@ blue_mask = cv2.inRange(img_hsv, low_blue, high_blue)
 
 # We apply a Canny edge detector
 
-edges = cv2.Canny(img_gray, 300, 550)
+edges = cv2.Canny(img_gray, 200, 500)
+
+# We find the contours
 
 contours = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
-ctr = np.array(contours[0]).reshape((-1,1,2)).astype(np.int32)
+cv2.drawContours(img_rgb, contours[1], -1, (255, 0, 0), thickness=5)
 
-cv2.drawContours(img_gray, ctr, -1, (0, 255, 0), thickness=5)
-
-plt.imshow(img_gray)
+plt.imshow(img_rgb)
+plt.axis('off')
 plt.show()
