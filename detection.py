@@ -11,7 +11,8 @@ from connection import shootpic
 import matplotlib.pyplot as plt
 import numpy as np
 
-img = cv2.imread('test_image.jfif')
+
+img = cv2.imread('test_image.jfif')  # cv2 uses BGR
 
 img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # convert to RGB
 img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # convert to HSV
