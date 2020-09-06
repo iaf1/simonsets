@@ -6,7 +6,7 @@ Created on Sun Sep  6 10:40:56 2020
 @author: ivan
 """
 
-import urllib
+import urllib.request
 import cv2
 import numpy as np
 import time
