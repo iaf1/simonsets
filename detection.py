@@ -10,6 +10,7 @@ import cv2
 from connection import shootpic
 import matplotlib.pyplot as plt
 import numpy as np
+from functions import *
 
 
 img = cv2.imread('test_image.jfif')  # cv2 uses BGR
@@ -38,10 +39,34 @@ edges = cv2.Canny(img_gray, 200, 500)
 
 # We find the contours
 
-contours = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+contours = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
-cv2.drawContours(img_rgb, contours[1], -1, (255, 0, 0), thickness=5)
 
+cv2.drawContours(img_rgb, contours[0], -1, (255, 0, 0), thickness=5)
+
+for idx in range(len(contours[0])):
+    print(idx)
+    mask = np.zeros_like(img) # Create mask where white is what we want, black otherwise
+    cv2.drawContours(mask, contours[0], idx, 255, -1) # Draw filled contour in mask
+    
+    perc_nonzero = np.count_nonzero(np.sum(mask, axis=2)) / (mask.shape[0]*mask.shape[1])
+    
+    if perc_nonzero < 0.01 : continue
+    
+    out = np.zeros_like(img) # Extract out the object and place into output image
+    out[mask == 255] = img[mask == 255]
+
+    # Show the output image
+    cv2.imshow('Output', cv2.resize(out, (750,1000)))
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    
+    print()
+
+# Show the output image
+#cv2.imshow('Output', out)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 plt.imshow(img_rgb)
 plt.axis('off')
 plt.show()
