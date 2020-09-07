@@ -70,7 +70,7 @@ def classification(img_bgr):
     rectangle_idx = correlate(contour_img, rectangle).max()
     wave_idx = correlate(contour_img, wave).max()
 
-    shapes = np.array((rectangle_idx, elipse_idx, wave_idx))
+    shapes = np.array((elipse_idx, wave_idx, rectangle_idx))
     shape_index = np.where(shapes == np.amax(shapes))[0][0]
 
     # NUMBER DETECTION
