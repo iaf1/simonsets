@@ -45,8 +45,8 @@ class Card:
         self.array = np.array(array)
         self.fill = FILLS.get(self.array[3])
         self.color = COLORS.get(self.array[2])
-        self.shape = COLORS.get(self.array[1])
-        self.amount = COLORS.get(self.array[0])
+        self.shape = SHAPES.get(self.array[1])
+        self.amount = AMOUNTS.get(self.array[0])
         
     def chars(self):
         return str(self.array[0]) + CHR_SHAPES.get(self.array[1],'') + CHR_COLORS.get(self.array[2],'') + CHR_FILLS.get(self.array[3],'')
