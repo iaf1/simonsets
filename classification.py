@@ -3,88 +3,78 @@ import matplotlib.pyplot as plt
 import numpy as np
 from correlation_functions import correlate, binarize
 
-img = cv2.imread('test_image.jfif')
-img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # convert to gray scale
+def classification(img_bgr):
+    img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+    img_hsv = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV)
+    img_gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)  # convert to gray scale
 
+    # COLOR DETECTION
 
-# COLOR DETECTION
+    # We define the color thresholds in the HSV space
+    low_red = np.array([161, 30, 30])
+    high_red = np.array([179, 255, 255])
+    low_red_1 = np.array([0, 30, 30])
+    high_red_1 = np.array([10, 255, 255])
+    red_mask = np.logical_or(cv2.inRange(img_hsv, low_red, high_red), cv2.inRange(img_hsv, low_red_1, high_red_1)).astype(int)
 
-# Then we define the color thresholds in the HSV space
+    low_green = np.array([40, 30, 30])
+    high_green = np.array([90, 255, 255])
+    green_mask = cv2.inRange(img_hsv, low_green, high_green)/255
 
-low_red = np.array([161, 50, 50])
-high_red = np.array([179, 255, 255])
-low_red_1 = np.array([0, 0, 0])
-high_red_1 = np.array([10, 255, 255])
-red_mask = np.logical_or(cv2.inRange(img_hsv, low_red, high_red), cv2.inRange(img_hsv, low_red_1, high_red_1)).astype(int)
+    low_blue = np.array([110, 50, 50])
+    high_blue = np.array([130, 255, 255])
+    blue_mask = cv2.inRange(img_hsv, low_blue, high_blue)/255
 
-low_green = np.array([40, 100, 100])
-high_green = np.array([90, 255, 255])
-green_mask = cv2.inRange(img_hsv, low_green, high_green)/255
+    color_masks = np.array((red_mask, green_mask, blue_mask))
+    sum_pix = np.sum(color_masks, axis=2)
+    color_index = np.where(sum_pix == np.amax(sum_pix))[0][0]
 
-low_blue = np.array([110, 100, 50])
-high_blue = np.array([130, 255, 255])
-blue_mask = cv2.inRange(img_hsv, low_blue, high_blue)/255
+    # FILLING DETECTION
 
-# We detect the color of the card
+    # We blur the gray image
 
-color_masks = np.array((red_mask, green_mask, blue_mask))
-sum_pix = np.sum(color_masks, axis=2)
-color_index = np.where(sum_pix == np.amax(sum_pix))[0][0]
-colors = ['Red', 'Green', 'Blue']
+    blurred_img = cv2.blur(img_gray, (2, 2))
 
-print('The card is color ' + str(colors[color_index]))
+    # We apply a Canny edge detector
 
-# FILLING DETECTION
+    edges = cv2.Canny(blurred_img, 200, 500)
 
-# We blur the gray image
+    contours = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-blurred_img = cv2.blur(img_gray, (2, 2))
+    good_contours = np.where(contours[1][:, :, 3][0] == 1)
 
-# We apply a Canny edge detector
+    mask = np.zeros_like(img_bgr[:, :, 0])
+    for i in range(len(good_contours[0])):
+        cv2.drawContours(mask, contours[0], good_contours[0][i], 1, -1)
 
-edges = cv2.Canny(blurred_img, 200, 500)
+    contour_img = np.zeros_like(img_bgr[:, :, 0])
+    for i in range(len(good_contours[0])):
+        cv2.drawContours(contour_img, contours[0], good_contours[0][i], 1, 1)
 
-contours = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    filling = 100 - (np.sum(mask) - np.sum(color_masks[color_index]))*100/(np.sum(mask) - np.sum(contour_img)*6)
 
-mask = np.zeros_like(img[:, :, 0])
-cv2.drawContours(mask, contours[1], -1, 1, -1)
+    if filling < 5:
+        filling_idx = 0
+    elif filling >= 5 and filling <= 90:
+        filling_idx = 1
+    elif filling > 90:
+        filling_idx = 2
 
-contour_img = np.zeros_like(img[:, :, 0])
-cv2.drawContours(contour_img, contours[1], -1, 1, 1)
+    # SHAPE DETECTION
 
-filling = 100 - (np.sum(mask) - np.sum(color_masks[color_index]))*100/(np.sum(mask) - np.sum(contour_img))
+    elipse = cv2.imread('elipse.jpg', cv2.IMREAD_GRAYSCALE)
+    rectangle = cv2.imread('rectangle.jpg', cv2.IMREAD_GRAYSCALE)
+    wave = cv2.imread('onada.jpg', cv2.IMREAD_GRAYSCALE)
 
-if filling < 10:
-    print('The figure is not filled')
-elif filling >= 10 and filling <= 95:
-    print('The figure is partially filled')
-elif filling > 90:
-    print('The figure is completely filled')
+    elipse_idx = correlate(contour_img, elipse).max()
+    rectangle_idx = correlate(contour_img, rectangle).max()
+    wave_idx = correlate(contour_img, wave).max()
 
-"""fig, ax = plt.subplots(2, 2)
-ax[0][0].imshow(img_rgb)
-ax[0][1].imshow(contour_img)
-ax[1][0].imshow(mask)
-ax[1][1].imshow(green_mask)
-plt.show()"""
+    shapes = np.array((rectangle_idx, elipse_idx, wave_idx))
+    shape_index = np.where(shapes == np.amax(shapes))[0][0]
 
-# SHAPE DETECTION
+    # NUMBER DETECTION
 
-img_bin = binarize(img_gray)
+    number = len(good_contours[0])
 
-elipse = cv2.imread('elipse.jpg', cv2.IMREAD_GRAYSCALE)
-rectangle = cv2.imread('rectangle.jpg', cv2.IMREAD_GRAYSCALE)
-wave = cv2.imread('onada.jpg', cv2.IMREAD_GRAYSCALE)
-
-elipse_idx = correlate(img_gray, elipse).max()
-rectangle_idx = correlate(img_gray, rectangle).max()
-wave_idx = correlate(img_gray, wave).max()
-
-fig, ax = plt.subplots(2, 2)
-ax[0][0].imshow(elipse_idx)
-ax[0][1].imshow(rectangle_idx)
-ax[1][0].imshow(wave_idx)
-ax[1][1].imshow(img)
-plt.show()
+    return str(number), shape_index + 1, color_index + 1, filling_idx + 1
