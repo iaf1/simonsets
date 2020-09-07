@@ -1,8 +1,9 @@
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
+from correlation_functions import correlate, binarize
 
-img = cv2.imread('blue_image.jfif')
+img = cv2.imread('test_image.jfif')
 img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # convert to gray scale
@@ -62,9 +63,28 @@ elif filling >= 10 and filling <= 95:
 elif filling > 90:
     print('The figure is completely filled')
 
-fig, ax = plt.subplots(2, 2)
+"""fig, ax = plt.subplots(2, 2)
 ax[0][0].imshow(img_rgb)
 ax[0][1].imshow(contour_img)
 ax[1][0].imshow(mask)
 ax[1][1].imshow(green_mask)
+plt.show()"""
+
+# SHAPE DETECTION
+
+img_bin = binarize(img_gray)
+
+elipse = cv2.imread('elipse.jpg', cv2.IMREAD_GRAYSCALE)
+rectangle = cv2.imread('rectangle.jpg', cv2.IMREAD_GRAYSCALE)
+wave = cv2.imread('onada.jpg', cv2.IMREAD_GRAYSCALE)
+
+elipse_idx = correlate(img_gray, elipse).max()
+rectangle_idx = correlate(img_gray, rectangle).max()
+wave_idx = correlate(img_gray, wave).max()
+
+fig, ax = plt.subplots(2, 2)
+ax[0][0].imshow(elipse_idx)
+ax[0][1].imshow(rectangle_idx)
+ax[1][0].imshow(wave_idx)
+ax[1][1].imshow(img)
 plt.show()
