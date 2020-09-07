@@ -60,10 +60,5 @@ for idx in range(len(contours[0])):
     cropped_img = np.where(mask == 255)
 
     # Show the output image
-    cv2.imshow('Output', cv2.resize(out, (750,1000)))
     col, fil, shape, num = classification(out)
-    print('Color: {c}, Filling: {f}, Shape: {s}, Number: {n}'.format(c=col, f=fil, s=shape, n=num))
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-    print()
+    print('Number: {c}, Shape: {f}, Color: {s}, Filling: {n}'.format(c=col, f=fil, s=shape, n=num))
