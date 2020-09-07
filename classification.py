@@ -77,4 +77,4 @@ def classification(img_bgr):
 
     number = len(good_contours[0])
 
-    return str(number), shape_index + 1, color_index + 1, filling_idx + 1
+    return number, shape_index + 1, color_index + 1, filling_idx + 1

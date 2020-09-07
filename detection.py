@@ -42,11 +42,13 @@ edges = cv2.Canny(img_gray, 200, 500)
 
 contours = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
+board = []
+
 
 cv2.drawContours(img_gray, contours[0], -1, 255, thickness=5)
 
 for idx in range(len(contours[0])):
-    print(idx)
+    #print(idx)
     mask = np.zeros_like(img_gray) # Create mask where white is what we want, black otherwise
     cv2.drawContours(mask, contours[0], idx, 255, -1) # Draw filled contour in mask
     
@@ -60,5 +62,16 @@ for idx in range(len(contours[0])):
     cropped_img = np.where(mask == 255)
 
     # Show the output image
+<<<<<<< HEAD
     col, fil, shape, num = classification(out)
     print('Number: {c}, Shape: {f}, Color: {s}, Filling: {n}'.format(c=col, f=fil, s=shape, n=num))
+=======
+    cv2.imshow('Output', cv2.resize(out, (750,1000)))
+    tup_props = classification(out)
+    num, shape, col, fil = tup_props
+    print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'.format(c=COLORS[col], f=FILLS[fil], s=SHAPES[shape], n=str(num)))
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+    board.append(Card(tup_props))
+>>>>>>> 08765a172c4fc90e35dd0226f6856ce5cc5af413
