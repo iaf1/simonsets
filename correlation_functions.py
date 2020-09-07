@@ -1,3 +1,5 @@
+import numpy as np
+
 def adjustdims(arr1,arr2):
     """Given two arrays, pads the smallest one to the dimensions of the bigest ones.
     inputs:
