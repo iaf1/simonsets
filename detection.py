@@ -11,9 +11,10 @@ from connection import shootpic
 import matplotlib.pyplot as plt
 import numpy as np
 from functions import *
+from classification import classification
 
 
-img = cv2.imread('test_image.jfif')  # cv2 uses BGR
+img = cv2.imread('full_image.jpeg')  # cv2 uses BGR
 
 img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # convert to RGB
 img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # convert to HSV
@@ -42,31 +43,27 @@ edges = cv2.Canny(img_gray, 200, 500)
 contours = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
 
-cv2.drawContours(img_rgb, contours[0], -1, (255, 0, 0), thickness=5)
+cv2.drawContours(img_gray, contours[0], -1, 255, thickness=5)
 
 for idx in range(len(contours[0])):
     print(idx)
-    mask = np.zeros_like(img) # Create mask where white is what we want, black otherwise
+    mask = np.zeros_like(img_gray) # Create mask where white is what we want, black otherwise
     cv2.drawContours(mask, contours[0], idx, 255, -1) # Draw filled contour in mask
     
-    perc_nonzero = np.count_nonzero(np.sum(mask, axis=2)) / (mask.shape[0]*mask.shape[1])
+    perc_nonzero = np.count_nonzero(mask) / (mask.shape[0]*mask.shape[1])
     
     if perc_nonzero < 0.01 : continue
-    
+
     out = np.zeros_like(img) # Extract out the object and place into output image
     out[mask == 255] = img[mask == 255]
 
+    cropped_img = np.where(mask == 255)
+
     # Show the output image
     cv2.imshow('Output', cv2.resize(out, (750,1000)))
+    col, fil, shape, num = classification(out)
+    print('Color: {c}, Filling: {f}, Shape: {s}, Number: {n}'.format(c=col, f=fil, s=shape, n=num))
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-    
-    print()
 
-# Show the output image
-#cv2.imshow('Output', out)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-plt.imshow(img_rgb)
-plt.axis('off')
-plt.show()
+    print()
