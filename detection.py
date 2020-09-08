@@ -13,12 +13,20 @@ import numpy as np
 from functions import *
 from classification import classification
 
+from PIL import Image, ImageFont, ImageDraw
+from matplotlib import cm
 
 img = cv2.imread('full_image.jpeg')  # cv2 uses BGR
 
 img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # convert to RGB
 img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # convert to HSV
 img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # convert to gray scale
+
+############################################################################ PIL #
+img_pil = Image.fromarray((img_rgb).astype(np.uint8))                     ##
+draw = ImageDraw.Draw(img_pil)                                                  ##
+font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMono.ttf',40) ##
+##################################################################################
 
 # Then we define the color thresholds in the HSV space
 
@@ -40,27 +48,44 @@ edges = cv2.Canny(img_gray, 200, 500)
 
 # We find the contours
 
-contours = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
+contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+masks = []
 board = []
 
 
-cv2.drawContours(img_gray, contours[0], -1, 255, thickness=5)
+cv2.drawContours(img_gray, contours, -1, 255, thickness=5)
 
-for idx in range(len(contours[0])):
+for idx in range(len(contours)):
     #print(idx)
     mask = np.zeros_like(img_gray) # Create mask where white is what we want, black otherwise
-    cv2.drawContours(mask, contours[0], idx, 255, -1) # Draw filled contour in mask
     
+    cv2.drawContours(mask, contours, idx, 255, -1) # Draw filled contour in mask
+    mask2 = mask.copy()
+        
     perc_nonzero = np.count_nonzero(mask) / (mask.shape[0]*mask.shape[1])
     
     if perc_nonzero < 0.01 : continue
 
     out = np.zeros_like(img) # Extract out the object and place into output image
     out[mask == 255] = img[mask == 255]
-
-    cropped_img = np.where(mask == 255)
+    
+    rect = cv2.minAreaRect(contours[idx])
+    box = cv2.boxPoints(rect)
 
     # Show the output image
-    col, fil, shape, num = classification(out)
-    print('Number: {c}, Shape: {f}, Color: {s}, Filling: {n}'.format(c=col, f=fil, s=shape, n=num))
+    tup_props = classification(out)
+    num, shape, col, fil = tup_props
+    print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'.format(c=col, f=fil, s=shape, n=num))
+    
+    board.append(Card(tup_props))
+    masks.append(mask)
+
+    ############################################################ PIL #
+    draw.text((box[0,0], box[0,1]), board[-1].chars() ,(255,0,255),font=font)
+    ##################################################################
+
+img_text = np.array(img_pil)
+    
+    
