@@ -62,16 +62,25 @@ def classification(img_bgr):
 
     # SHAPE DETECTION
 
-    elipse = cv2.imread('elipse.jpg', cv2.IMREAD_GRAYSCALE)
-    rectangle = cv2.imread('rectangle.jpg', cv2.IMREAD_GRAYSCALE)
-    wave = cv2.imread('onada.jpg', cv2.IMREAD_GRAYSCALE)
-
-    elipse_idx = correlate(contour_img, elipse).max()
-    rectangle_idx = correlate(contour_img, rectangle).max()
-    wave_idx = correlate(contour_img, wave).max()
-
-    shapes = np.array((elipse_idx, wave_idx, rectangle_idx))
-    shape_index = np.where(shapes == np.amax(shapes))[0][0]
+# =============================================================================
+# ALBERT'S IMPLEMENTATION
+# =============================================================================
+#     elipse = cv2.imread('elipse.jpg', cv2.IMREAD_GRAYSCALE)
+#     rectangle = cv2.imread('rectangle.jpg', cv2.IMREAD_GRAYSCALE)
+#     wave = cv2.imread('onada.jpg', cv2.IMREAD_GRAYSCALE)
+# 
+#     elipse_idx = correlate(contour_img, elipse).max()
+#     rectangle_idx = correlate(contour_img, rectangle).max()
+#     wave_idx = correlate(contour_img, wave).max()
+# 
+#     shapes = np.array((elipse_idx, wave_idx, rectangle_idx))
+#     shape_index = np.where(shapes == np.amax(shapes))[0][0]
+# =============================================================================
+    
+    blank = np.zeros_like(img_bgr[:,:,0])
+    ellipse = cv2.fitEllipse(contours[0][0])
+    ellipse_im = cv2.ellipse(blank, ellipse, 255, 2)
+    ellipse_cont = cv2.findContours(ellipse)
 
     # NUMBER DETECTION
 
