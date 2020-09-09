@@ -36,20 +36,6 @@ elif platform == "win32":                                                       
     font = ImageFont.truetype(cf.font_path_win, cf.font_size)                        ##
 ######################################################################################
 
-# Then we define the color thresholds in the HSV space
-
-low_red = np.array([161, 80, 100])
-high_red = np.array([179, 255, 255])
-red_mask = cv2.inRange(img_hsv, low_red, high_red)
-
-low_green = np.array([40, 100, 100])
-high_green = np.array([90, 255, 255])
-green_mask = cv2.inRange(img_hsv, low_green, high_green)
-
-low_blue = np.array([110, 100, 50])
-high_blue = np.array([130, 255, 255])
-blue_mask = cv2.inRange(img_hsv, low_blue, high_blue)
-
 # We apply a Canny edge detector
 
 edges = cv2.Canny(img_gray, 200, 500)
@@ -106,14 +92,7 @@ img_text = np.array(img_pil)
 plt.figure()
 plt.imshow(img_text)
 
-list_of_sets = []
-for ii in range(len(board)-2):
-    for iii in range(len(board)-2-ii):
-        for iv in range(len(board)-2-ii-iii):
-            selected = [board[ii], board[ii + iii + 1], board[ii + iii + iv + 2]]
-            result = is_set(selected)
-            if result is True:
-                list_of_sets.append([ii, iii, iv])
+list_of_sets = find_sets(board)
 
 print(list_of_sets)
-plt.show()
+

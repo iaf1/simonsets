@@ -7,6 +7,7 @@ Created on Sun Sep  6 19:33:31 2020
 edit: simon
 """
 import numpy as np
+import itertools as it
 
 inv_dict = lambda dct: {v: k for (k, v) in dct.items()}
 
@@ -64,7 +65,7 @@ class Card:
 '''
 params = [[□, ⬔, ■], [R, G, B], [⬭, ～, ▭], [1, 2, 3]]'''
 def is_set(inp):
-    assert isinstance(inp, list)
+    assert isinstance(inp, list) or isinstance(inp, np.ndarray)
     assert len(inp) == 3
     params1 = np.array([np.zeros(3), np.zeros(3), np.zeros(3), np.zeros(3)])
     params2 = np.array([np.zeros(3), np.zeros(3), np.zeros(3), np.zeros(3)])
@@ -82,8 +83,7 @@ def is_set(inp):
     params3[2][inp[2].array[2] - 1] = 1
     params3[3][inp[2].array[3] - 1] = 1
     result = params1 + params2 + params3
-    twos = np.where(result == 2)
-    if twos[0].size == 0:
+    if not (result == 2).any()
         print('is a set')
         print('1st card: ')
         print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'
@@ -98,6 +98,23 @@ def is_set(inp):
     else:
         return False
 
+def find_sets(board):
+    
+    assert isinstance(board, list) or isinstance(board, np.ndarray)
+
+    list_of_sets = []
+    
+    board = np.array(board)
+    
+    indices = [i for i in range(len(board))]
+    
+    for three_indices in it.combinations(indices, 3):
+        three = board[list(three_indices)]
+        
+        if is_set(three):
+            list_of_sets.append(tuple(three_indices))
+    
+    return list_of_sets
 
 
 example1 = [Card([3, 1, 1, 1]), Card([3, 1, 1, 2]), Card([3, 1, 1, 3])]
