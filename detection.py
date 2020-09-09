@@ -25,7 +25,7 @@ img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # convert to gray scale
 ############################################################################ PIL #
 img_pil = Image.fromarray((img_rgb).astype(np.uint8))                     ##
 draw = ImageDraw.Draw(img_pil)                                                  ##
-font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMono.ttf',40) ##
+font = ImageFont.truetype('arial.ttf',40) ##
 ##################################################################################
 
 # Then we define the color thresholds in the HSV space
@@ -81,12 +81,6 @@ for idx in range(len(contours)):
     print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'.format(c=COLORS[col], f=FILLS[fil], s=SHAPES[shape], n=str(num)))
     cv2.waitKey(0)
     cv2.destroyAllWindows()
- 
-    board.append(Card(tup_props))
-
-    tup_props = classification(out)
-    num, shape, col, fil = tup_props
-    print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'.format(c=col, f=fil, s=shape, n=num))
 
     board.append(Card(tup_props))
     masks.append(mask)
@@ -96,10 +90,18 @@ for idx in range(len(contours)):
     ##################################################################
 
 img_text = np.array(img_pil)
+plt.figure()
+plt.imshow(img_text)
 
-
+list_of_sets = []
 for ii in range(len(board)-2):
     for iii in range(len(board)-2-ii):
         for iv in range(len(board)-2-ii-iii):
             selected = [board[ii], board[ii + iii + 1], board[ii + iii + iv + 2]]
-            is_set(selected)
+            result = is_set(selected)
+            if result is True:
+                list_of_sets.append([ii, iii, iv])
+
+print(list_of_sets)
+plt.show()
+

@@ -94,8 +94,9 @@ def is_set(inp):
         print('3rd card: ')
         print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'
               .format(c=inp[2].color, f=inp[2].fill, s=inp[2].shape, n=inp[2].amount))
-    # else:
-    #    print('is a set')
+        return True
+    else:
+        return False
 
 
 
