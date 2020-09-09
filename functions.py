@@ -25,6 +25,13 @@ CHR_FILLS = {1: '□ ', 2: '⬔', 3: '■'}
 CHR_SHAPES = {1: '⬭', 2: '～', 3: '▭'}
 CHR_COLORS = {1: 'R', 2: 'G', 3: 'B'}
 
+CHR_FILLS = {1: '□ ', 2: '⬔', 3: '■'}
+CHR_SHAPES = {1: 'O', 2: '~', 3: '▭'}
+CHR_COLORS = {1: 'R', 2: 'G', 3: 'B'}
+
+#CHR_FILLS = {1: 'E', 2: 'H', 3: 'F'}
+#CHR_SHAPES = {1: 'C', 2: 'W', 3: 'S'}
+#CHR_COLORS = {1: 'R', 2: 'G', 3: 'B'}
 
 class Card:
     def __init__(self, array):
