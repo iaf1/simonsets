@@ -77,6 +77,7 @@ for idx in range(len(contours)):
     # Show the output image
     cv2.imshow('Output', cv2.resize(out, (750, 1000)))
     tup_props = classification(out)
+    
     num, shape, col, fil = tup_props
     print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'.format(c=COLORS[col], f=FILLS[fil], s=SHAPES[shape], n=str(num)))
     cv2.waitKey(0)
@@ -88,8 +89,10 @@ for idx in range(len(contours)):
     ############################################################ PIL #
     draw.text((box[0, 0], box[0, 1]), board[-1].chars(), (255, 0, 255), font=font)
     ##################################################################
-
+    
+    
 img_text = np.array(img_pil)
+
 plt.figure()
 plt.imshow(img_text)
 
@@ -104,4 +107,3 @@ for ii in range(len(board)-2):
 
 print(list_of_sets)
 plt.show()
-
