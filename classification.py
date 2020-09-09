@@ -134,4 +134,4 @@ def classification(img_bgr):
 
     number = len(good_contours[0])
 
-    return number, shape_index + 1, color_index + 1, filling_idx + 1, (contour_img1, ellipse_full, ellipse_comp)
+    return number, shape_index + 1, color_index + 1, filling_idx + 1

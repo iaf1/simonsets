@@ -13,6 +13,7 @@ import numpy as np
 from functions import *
 from classification import classification
 
+from sys import platform
 from PIL import Image, ImageFont, ImageDraw
 from matplotlib import cm
 
@@ -22,11 +23,16 @@ img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # convert to RGB
 img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # convert to HSV
 img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # convert to gray scale
 
-############################################################################ PIL #
-img_pil = Image.fromarray((img_rgb).astype(np.uint8))                     ##
-draw = ImageDraw.Draw(img_pil)                                                  ##
-font = ImageFont.truetype('arial.ttf',40) ##
-##################################################################################
+############################################################################ PIL #####
+img_pil = Image.fromarray((img_rgb).astype(np.uint8))                               ##
+draw = ImageDraw.Draw(img_pil)                                                      ##
+if platform == "linux" or platform == "linux2":                                     ##
+    font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMono.ttf',40) ##
+elif platform == "darwin":                                                          ##
+    raise NotImplementedError                                                       ##
+elif platform == "win32":                                                           ## 
+    font = ImageFont.truetype('arial.ttf',40)                                       ##
+######################################################################################
 
 # Then we define the color thresholds in the HSV space
 
@@ -86,9 +92,9 @@ for idx in range(len(contours)):
     board.append(Card(tup_props))
     masks.append(mask)
 
-    ############################################################ PIL #
-    draw.text((box[0, 0], box[0, 1]), board[-1].chars(), (255, 0, 255), font=font)
-    ##################################################################
+    ############################################################ PIL ###############
+    draw.text((box[0, 0], box[0, 1]), board[-1].chars(), (255, 0, 255), font=font) #
+    ################################################################################
     
     
 img_text = np.array(img_pil)
