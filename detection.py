@@ -13,6 +13,8 @@ import numpy as np
 from functions import *
 from classification import classification
 
+from initSettings import cf
+
 from sys import platform
 from PIL import Image, ImageFont, ImageDraw
 from matplotlib import cm
@@ -27,11 +29,11 @@ img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # convert to gray scale
 img_pil = Image.fromarray((img_rgb).astype(np.uint8))                               ##
 draw = ImageDraw.Draw(img_pil)                                                      ##
 if platform == "linux" or platform == "linux2":                                     ##
-    font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMono.ttf',40) ##
+    font = ImageFont.truetype(cf.font_path_lin, cf.font_size)                       ##
 elif platform == "darwin":                                                          ##
     raise NotImplementedError                                                       ##
 elif platform == "win32":                                                           ## 
-    font = ImageFont.truetype('arial.ttf',40)                                       ##
+    font = ImageFont.truetype(cf.font_path_win, cf.font_size)                        ##
 ######################################################################################
 
 # Then we define the color thresholds in the HSV space
@@ -72,7 +74,7 @@ for idx in range(len(contours)):
         
     perc_nonzero = np.count_nonzero(mask) / (mask.shape[0]*mask.shape[1])
     
-    if perc_nonzero < 0.01: continue
+    if perc_nonzero < cf.thresh_card_perc: continue
 
     out = np.zeros_like(img) # Extract out the object and place into output image
     out[mask == 255] = img[mask == 255]
@@ -80,14 +82,16 @@ for idx in range(len(contours)):
     rect = cv2.minAreaRect(contours[idx])
     box = cv2.boxPoints(rect)
 
-    # Show the output image
-    cv2.imshow('Output', cv2.resize(out, (750, 1000)))
     tup_props = classification(out)
     
     num, shape, col, fil = tup_props
     print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'.format(c=COLORS[col], f=FILLS[fil], s=SHAPES[shape], n=str(num)))
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    
+    if cf.show_cards:
+        # Show the output image
+        cv2.imshow('Output', cv2.resize(out, (750, 1000)))
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
     board.append(Card(tup_props))
     masks.append(mask)

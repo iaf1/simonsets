@@ -2,6 +2,8 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
+from initSettings import cf
+
 def classification(img_bgr):
     img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
     img_hsv = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV)
@@ -52,13 +54,13 @@ def classification(img_bgr):
         cv2.drawContours(contour_img, contours, good_contours[0][i], 1, 1)
     cv2.drawContours(contour_img1, contours, good_contours[0][0], 1, -1)
     
-    filling = 100 - (np.sum(mask) - np.sum(color_masks[color_index]))*100/(np.sum(mask) - np.sum(contour_img)*6)
+    filling = 1 - (np.sum(mask) - np.sum(color_masks[color_index]))/(np.sum(mask) - np.sum(contour_img)*6)
 
-    if filling < 5:
+    if filling < cf.thresh_low:
         filling_idx = 0
-    elif filling >= 5 and filling <= 90:
+    elif filling >= cf.thresh_low and filling <= cf.thresh_high:
         filling_idx = 1
-    elif filling > 90:
+    elif filling > cf.thresh_high:
         filling_idx = 2
 
     # SHAPE DETECTION
@@ -99,7 +101,7 @@ def classification(img_bgr):
     ellipse_cpt = np.count_nonzero(np.logical_and(contour_img1, ellipse_full)) / np.count_nonzero(np.logical_or(contour_img1, ellipse_full))
     rect_cpt = np.count_nonzero(np.logical_and(contour_img1, rect_full)) / np.count_nonzero(np.logical_or(contour_img1, rect_full))
     
-    if max(ellipse_cpt, rect_cpt) < 0.9:
+    if max(ellipse_cpt, rect_cpt) < cf.thresh_shape_match:
         shape_index = 1
     else:
         if ellipse_cpt > rect_cpt:
