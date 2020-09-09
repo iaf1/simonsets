@@ -76,7 +76,7 @@ for idx in range(len(contours)):
 
     # Show the output image
     tup_props = classification(out)
-    num, shape, col, fil = tup_props
+    num, shape, col, fil, (aa, bb, cc) = tup_props
     print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'.format(c=col, f=fil, s=shape, n=num))
     
     board.append(Card(tup_props))
@@ -85,7 +85,11 @@ for idx in range(len(contours)):
     ############################################################ PIL #
     draw.text((box[0,0], box[0,1]), board[-1].chars() ,(255,0,255),font=font)
     ##################################################################
-
+    
+    
 img_text = np.array(img_pil)
+
+plt.figure()
+plt.imshow(img_text)
     
     
