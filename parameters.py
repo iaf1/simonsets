@@ -21,16 +21,23 @@ parameters = {"URL"                 : "http://192.168.0.66:8080/shot.jpg",
               'thresh_high' : 0.9,
               
               # fonts (different OS)
-              'font_path_win'       : 'aria.ttf',
+              'font_path_win'       : 'arial.ttf',
               'font_path_lin'       : '/usr/share/fonts/truetype/freefont/FreeMono.ttf',
               
-              # font size
-              'font_size'           : 40,
+              # font in results image
+              'font_size'           : 50,
+              'font_color'          : (255,255,255),
               
               # show cards individually
               'show_cards'          : False,
               
-              'font_color'          : (255,255,255),
+              # pattern
+              'pat_thick'           : 6,
+              'pat_dist'            : 40,
+              
+              # connection
+              'live'                : True,
+              'URL'                 : "http://192.168.0.66:8080/shot.jpg",
               
               }
               

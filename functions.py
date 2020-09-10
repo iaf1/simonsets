@@ -86,16 +86,18 @@ def is_set(inp):
     
     if not (result == 2).any():
         
-        print('is a set')
-        print('1st card: ')
-        print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'
-              .format(c=inp[0].color, f=inp[0].fill, s=inp[0].shape, n=inp[0].amount))
-        print('2nd card: ')
-        print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'
-              .format(c=inp[1].color, f=inp[1].fill, s=inp[1].shape, n=inp[1].amount))
-        print('3rd card: ')
-        print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'
-              .format(c=inp[2].color, f=inp[2].fill, s=inp[2].shape, n=inp[2].amount))
+# =============================================================================
+#         print('is a set')
+#         print('1st card: ')
+#         print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'
+#               .format(c=inp[0].color, f=inp[0].fill, s=inp[0].shape, n=inp[0].amount))
+#         print('2nd card: ')
+#         print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'
+#               .format(c=inp[1].color, f=inp[1].fill, s=inp[1].shape, n=inp[1].amount))
+#         print('3rd card: ')
+#         print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'
+#               .format(c=inp[2].color, f=inp[2].fill, s=inp[2].shape, n=inp[2].amount))
+# =============================================================================
         return True
     else:
         return False

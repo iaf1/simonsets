@@ -13,29 +13,19 @@ import numpy as np
 from functions import *
 from classification import classification
 from draw import draw_pattern, put_text
+from connection import shootpic
 
 from initSettings import cf
 
-from sys import platform
-from PIL import Image, ImageFont, ImageDraw
-from matplotlib import cm
+if cf.live:
+    img = shootpic()
+else:
+    img = cv2.imread('full_image.jpeg')
 
-img = cv2.imread('full_image.jpeg')  # cv2 uses BGR
 
 img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # convert to RGB
 img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # convert to HSV
 img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # convert to gray scale
-
-############################################################################ PIL #####
-img_pil = Image.fromarray((img_rgb).astype(np.uint8))                               ##
-draw = ImageDraw.Draw(img_pil)                                                      ##
-if platform == "linux" or platform == "linux2":                                     ##
-    font = ImageFont.truetype(cf.font_path_lin, cf.font_size)                       ##
-elif platform == "darwin":                                                          ##
-    raise NotImplementedError                                                       ##
-elif platform == "win32":                                                           ## 
-    font = ImageFont.truetype(cf.font_path_win, cf.font_size)                        ##
-######################################################################################
 
 # We apply a Canny edge detector
 
@@ -95,9 +85,12 @@ plt.imshow(img_text)
 
 list_of_sets = find_sets(board)
 
-print(list_of_sets)
-
-img_out, _ = draw_pattern(img_text, masks, list_of_sets)
+if list_of_sets != []:
+    print('Sets found: {}'.format(list_of_sets))
+else:
+    print('No sets found.')
+    
+img_out = draw_pattern(img_text, masks, list_of_sets)
 
 plt.figure()
 plt.imshow(img_out)

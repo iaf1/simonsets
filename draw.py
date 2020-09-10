@@ -9,13 +9,10 @@ Created on Wed Sep  9 21:07:57 2020
 import matplotlib.pyplot as plt
 from matplotlib import colors
 import numpy as np
+from initSettings import cf
 import cv2
 
-orientations = [30, 150, 90, 0, 60, 120]
-
-dd = 40
-
-thickness = 8
+orientations = [30, 150, 60, 120, 15, 165, 105, 75, 135]
 
 def HEX2RGB(value):
     value = value.lstrip('#')
@@ -26,6 +23,9 @@ colors_hex = list(colors.TABLEAU_COLORS.values())
 colors = [HEX2RGB(el) for el in colors_hex]
 
 def draw_pattern(img, masks, idx_sets):
+    
+    dd = cf.pat_dist
+
     
     out = img.copy()
     
@@ -68,7 +68,7 @@ def draw_pattern(img, masks, idx_sets):
                 pt1 = (int(np.round(pt1[0])), int(np.round(Y-pt1[1])))
                 pt2 = (int(np.round(pt2[0])), int(np.round(Y-pt2[1])))
                             
-                cv2.line(pattern, pt1, pt2, col, thickness)
+                cv2.line(pattern, pt1, pt2, col, cf.pat_thick)
                 
                 z1+=1
             
@@ -86,7 +86,7 @@ def draw_pattern(img, masks, idx_sets):
                 pt1 = (int(np.round(pt1[0])), int(np.round(Y-pt1[1])))
                 pt2 = (int(np.round(pt2[0])), int(np.round(Y-pt2[1])))
                 
-                cv2.line(pattern, pt1, pt2, col, thickness)
+                cv2.line(pattern, pt1, pt2, col, cf.pat_thick)
                 
                 z1+=1
         
@@ -107,11 +107,10 @@ def draw_pattern(img, masks, idx_sets):
         
         out = np.where(masked_pattern != 0, masked_pattern, out)
                     
-    return out, masked_pattern
+    return out
 
 
 def put_text(img_rgb, board, boxes):
-    from initSettings import cf
     from PIL import Image, ImageFont, ImageDraw
     from sys import platform
 

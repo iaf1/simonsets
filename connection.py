@@ -13,7 +13,7 @@ import numpy as np
 import time
 from initSettings import cf
 
-URL = "http://192.168.0.66:8080/shot.jpg"
+URL = cf.URL
 #URL = "http://www.pyimagesearch.com/wp-content/uploads/2015/01/google_logo.png"
 
 
