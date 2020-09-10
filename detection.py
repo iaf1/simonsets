@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from functions import *
 from classification import classification
+from draw import draw_pattern, put_text
 
 from initSettings import cf
 
@@ -47,6 +48,7 @@ contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
 masks = []
 board = []
+boxes = []
 
 
 cv2.drawContours(img_gray, contours, -1, 255, thickness=5)
@@ -81,13 +83,12 @@ for idx in range(len(contours)):
 
     board.append(Card(tup_props))
     masks.append(mask)
+    boxes.append(box)
 
-    ############################################################ PIL ###############
-    draw.text((box[0, 0], box[0, 1]), board[-1].chars(), (255, 0, 255), font=font) #
-    ################################################################################
+
     
     
-img_text = np.array(img_pil)
+img_text = put_text(img_rgb, board, boxes)
 
 plt.figure()
 plt.imshow(img_text)
@@ -95,4 +96,9 @@ plt.imshow(img_text)
 list_of_sets = find_sets(board)
 
 print(list_of_sets)
+
+img_out, _ = draw_pattern(img_text, masks, list_of_sets)
+
+plt.figure()
+plt.imshow(img_out)
 

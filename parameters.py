@@ -30,5 +30,7 @@ parameters = {"URL"                 : "http://192.168.0.66:8080/shot.jpg",
               # show cards individually
               'show_cards'          : False,
               
+              'font_color'          : (255,255,255),
+              
               }
               

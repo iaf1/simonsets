@@ -83,7 +83,9 @@ def is_set(inp):
     params3[2][inp[2].array[2] - 1] = 1
     params3[3][inp[2].array[3] - 1] = 1
     result = params1 + params2 + params3
-    if not (result == 2).any()
+    
+    if not (result == 2).any():
+        
         print('is a set')
         print('1st card: ')
         print('Number: {n} | Shape: {s} | Color: {c} | Filling: {f}'
